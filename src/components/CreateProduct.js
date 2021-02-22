@@ -2,6 +2,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useState } from 'react';
 import Products from './Products';
+import axios from 'axios';
 
 function CreateProduct({
   clicked,
@@ -20,24 +21,56 @@ function CreateProduct({
     });
   }
 
+  const onCreateProduct = () => {
+    const url = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/products/';
+
+    const method = 'POST';
+    axios({
+      url: url,
+      method: method,
+      data: formData,
+    }).then((response) => {
+        const { data } = response;
+        setProducts([
+          ...products,
+          data,
+        ]);
+      }).catch((error) => {
+        console.error(error.response);
+      });
+  }
+
+  const onUpdateProduct = () => {
+    const url = `https://5f2d045b8085690016922b50.mockapi.io/todo-list/products/${ products[clicked].id }`;
+    const method = 'PUT';
+
+    axios({
+      url: url,
+      method: method,
+      data: formData,
+    }).then((response) => {
+        const { data } = response;
+        setProducts((oldState) => {
+          let newState = oldState.map((value, index) => {
+            return index == clicked ? data : value;
+          });
+
+          return newState;
+        });
+      }).catch((error) => {
+        console.error(error.response);
+      });
+  }
+
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    setProducts((oldState) => {
-      let newState;
-
-      if (clicked != -1) {
-        newState = oldState.map((value, index) => {
-          return index == clicked ? formData : value;
-        });
-      } else {
-        newState = [
-          ...products,
-          formData
-        ];
-      }
-
-      return newState;
-    });
+    if (clicked == -1) {
+      // Tạo mới
+      onCreateProduct();
+    } else {
+      // Cập nhật
+      onUpdateProduct();
+    }
   }
 
   const btnClearOnClick = () => {
@@ -47,7 +80,6 @@ function CreateProduct({
       name: '',
       price: '',
     });
-
   }
 
   return (

@@ -5,6 +5,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 function Products({
   data,
@@ -17,14 +19,30 @@ function Products({
     setFormData(value);
   }
 
-  const btnDeleteOnClick = (event, index) => {
-    setProducts((oldState) => {
-      let newState = oldState.filter((value, idx) => {
-        return idx == index ? false : true;
-      });
+  const onDelete = (value, index) => {
+    const url = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/products/' + value.id;
 
-      return newState;
-    });
+    return axios({
+      method: 'delete',
+      url: url,
+    })
+  }
+
+  const btnDeleteOnClick = (event, value, index) => {
+    const result = onDelete(value, index);
+
+    result.then((response) => {
+        setProducts((oldState) => {
+          let newState = oldState.filter((value, idx) => {
+            return idx == index ? false : true;
+          });
+
+          return newState;
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   return (
@@ -54,7 +72,7 @@ function Products({
                   <TableCell>{ value.price }</TableCell>
                   <TableCell>
                     <Button
-                      onClick={ (event) => btnDeleteOnClick(event, index) }
+                      onClick={ (event) => btnDeleteOnClick(event, value, index) }
                       color="secondary">Delete</Button>
                   </TableCell>
                 </TableRow>
