@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-function Products({
+function ListProducts({
   data,
   setClicked,
   setFormData,
@@ -85,4 +85,4 @@ function Products({
   );
 }
 
-export default Products;
+export default ListProducts;

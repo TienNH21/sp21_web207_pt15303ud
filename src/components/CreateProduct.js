@@ -1,7 +1,5 @@
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { useState } from 'react';
-import Products from './Products';
 import axios from 'axios';
 
 function CreateProduct({

@@ -1,69 +1,42 @@
 import './App.css';
-import Products from './components/Products';
-import CreateProduct from './components/CreateProduct';
-import React, { useState, useEffect } from 'react';
-
-import CircularProgress from '@material-ui/core/CircularProgress';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import axios from 'axios';
 import {
   Switch,
   Route,
+  Link,
 } from "react-router-dom";
 
+import Product from './components/Product';
+import Category from './components/category/Category';
+import Order from './components/order/Order';
+
 function App() {
-  const initValue = [];
-
-  const formDataInitValue = {
-    id: '',
-    name: '',
-    price: '',
-  };
-
-  const [products, setProducts] = useState(initValue);
-  const [clicked, setClicked] = useState(-1);
-  const [formData, setFormData] = useState(formDataInitValue);
-
-  let url = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/products';
-
-  useEffect(() => {
-    axios({
-      method: 'GET',
-      url: url,
-    })
-      .then((response) => {
-        const { data } = response;
-        setProducts(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   return (
-    <React.Fragment>
-      <CssBaseline />
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/product">Products</Link>
+          </li>
+          <li>
+            <Link to="/categories">Category</Link>
+          </li>
+          <li>
+            <Link to="/order">Order</Link>
+          </li>
+        </ul>
+      </nav>
       <Switch>
-        <Route path="/products/create">
-          <CreateProduct
-            products={ products }
-            formData={ formData }
-            setProducts={ setProducts }
-            setFormData={ setFormData }
-            setClicked={ setClicked }
-            clicked={ clicked }/>
+        <Route path="/product">
+          <Product />
         </Route>
-        <Route path="/products">
-          <Products
-            setFormData={ setFormData }
-            setProducts={ setProducts }
-            setClicked={ setClicked }
-            data={ products } />
+        <Route path="/categories">
+          <Category />
+        </Route>
+        <Route path="/order">
+          <Order />
         </Route>
       </Switch>
-    </React.Fragment>
+    </div>
   );
 }
 
