@@ -4,7 +4,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 import Product from './components/Product';
 import Category from './components/category/Category';
 import Order from './components/order/Order';
