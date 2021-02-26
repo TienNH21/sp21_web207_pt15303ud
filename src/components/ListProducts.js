@@ -32,13 +32,15 @@ function ListProducts({
     const result = onDelete(value, index);
 
     result.then((response) => {
-        setProducts((oldState) => {
-          let newState = oldState.filter((value, idx) => {
-            return idx == index ? false : true;
-          });
-
-          return newState;
+        const listProductNew = data.filter((item) => {
+          if (item.id == value.id) {
+            return false;
+          } else {
+            return true;
+          }
         });
+
+        setProducts(listProductNew);
       })
       .catch((error) => {
         console.log(error);

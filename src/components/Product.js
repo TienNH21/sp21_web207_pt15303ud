@@ -25,11 +25,22 @@ function Product() {
   const [clicked, setClicked] = useState(-1);
   const [formData, setFormData] = useState(formDataInitValue);
   const [loading, setLoading] = useState(false);
+  const [listDanhMuc, setListDanhMuc] = useState([]);
+  const [danhMucId, setDanhMucId] = useState(-1);
 
+  useEffect(() => {
+    const url = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/categories';
+    axios.get(url)
+    .then(function (response) {
+      const { data } = response;
+      setListDanhMuc(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }, []);
   let url = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/products';
   const [page, setPage] = useState(1);
-  // const urlParams = new URLSearchParams(window.location.search);
-  // let page = urlParams.get('page') != null ? urlParams.get('page') : 1;
 
   /*
    * Với search & filter: thêm params cho url. Tham khảo: https://mockapi.io/docs
@@ -37,8 +48,12 @@ function Product() {
    */
 
   useEffect(() => {
+    if (danhMucId == -1) {
+      return ;
+    }
+
     const limit = 5;
-    const phanTrangUrl = url + '?limit=' + limit + '&page=' + page;
+    const phanTrangUrl = 'https://5f2d045b8085690016922b50.mockapi.io/todo-list/categories/' + danhMucId + '/products?limit=' + limit + '&page=' + page;
     setLoading(true);
     axios({
       method: 'GET',
@@ -54,6 +69,7 @@ function Product() {
       });
   }, [
     page,
+    danhMucId,
     /*
      * Khi giá trị của các phần tử trong mảng thay đổi
      * useEffect() sẽ gọi lại hàm callback
@@ -70,6 +86,11 @@ function Product() {
   const trangSau = function () {
     console.log("Trang sau");
     setPage(page + 1);
+  }
+
+  const danhMucOnChange = function (event) {
+    setDanhMucId(event.target.value);
+    setPage(1);
   }
 
   return (
@@ -89,6 +110,22 @@ function Product() {
             clicked={ clicked }/>
         </Route>
         <Route path={ `${ path }` }>
+          <select
+            onChange={ danhMucOnChange }
+            className="form-control">
+            <option disabled>Chọn danh mục</option>
+            {
+              listDanhMuc.map((danhMuc, index) => {
+                return (
+                  <option
+                    key={ index }
+                    value={ danhMuc.id }>
+                    { danhMuc.name }
+                  </option>
+                );
+              })
+            }
+          </select>
           <ListProducts
             setFormData={ setFormData }
             setProducts={ setProducts }
